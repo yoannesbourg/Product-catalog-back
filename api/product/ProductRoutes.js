@@ -32,7 +32,9 @@ app.get("/", async (req, res) => {
 //get a single product
 app.get("/:id", async (req, res) => {
     try {
+        const { id } = req.params
         const product = await productModel.findOne({ _id: id })
+
         res.json(product)
     } catch (error) {
         console.error(error.message)
@@ -43,10 +45,10 @@ app.get("/:id", async (req, res) => {
 app.put("/update/:id", async (req, res) => {
     try {
         const { id } = req.params
-        const { description } = req.body
+        const { name, description, price, photo, active } = req.body.newValues
         const updateProduct = await productModel.updateOne({ _id: id }, {
             $set: {
-                description
+                name, description, price, photo, active
             }
         })
         return res.json(updateProduct)
