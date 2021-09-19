@@ -29,6 +29,30 @@ app.get("/", async (req, res) => {
     }
 })
 
+//get all products
+app.get("/filter/:active", async (req, res) => {
+    try {
+        if (!req.params) {
+            return res.json({
+                status: 400,
+                message: 'mising params'
+            })
+        }
+        let active
+
+        if (req.params === 'true') {
+            active = true
+        } else if (req.params === 'false') {
+            active = false
+        }
+        console.log(req.params)
+        const product = await productModel.find({active: {$eq: active}})
+        res.json(product)
+    } catch (error) {
+        console.error(error.message)
+    }
+})
+
 //get a single product
 app.get("/:id", async (req, res) => {
     try {
