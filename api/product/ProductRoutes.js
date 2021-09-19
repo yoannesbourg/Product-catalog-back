@@ -8,9 +8,9 @@ const productModel = require("../../models/productSchema")
 //Create a product
 app.post("/create", async (req, res) => {
     try {
-        const { description } = req.body
+        const { name, description, price, photo, active } = req.body
         const newProduct = new productModel({
-            description: description
+            name, description, price, photo, active
         })
         const result = await newProduct.save()
         return res.json(result)

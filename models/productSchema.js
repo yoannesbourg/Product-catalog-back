@@ -1,7 +1,11 @@
 const mongoose = require("mongoose")
 
 const productSchema = mongoose.Schema({
-    description: String
+    name: String,
+    description: String,
+    price: Number,
+    photo: String,
+    active: Boolean
 })
 
 const productModel = mongoose.model('product', productSchema)
