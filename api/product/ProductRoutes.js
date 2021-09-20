@@ -22,7 +22,7 @@ app.post("/create", async (req, res) => {
 //get all products
 app.get("/", async (req, res) => {
     try {
-        const product = await productModel.find()
+        const product = await productModel.find().skip(2).limit(4);
         res.json(product)
     } catch (error) {
         console.error(error.message)
