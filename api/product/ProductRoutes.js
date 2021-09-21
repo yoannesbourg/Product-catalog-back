@@ -11,8 +11,8 @@ app.post("/create", async (req, res) => {
         const { name, description, price, photo, active } = req.body.newProduct
         const newProduct = new productModel({
             name, description, price, photo, active
-        })
-        const result = await newProduct.save()
+        });
+        const result = await newProduct.save();
         return res.json(result)
     } catch (error) {
         console.error(error.message)
