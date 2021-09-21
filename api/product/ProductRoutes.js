@@ -19,11 +19,30 @@ app.post("/create", async (req, res) => {
     }
 })
 
-//get all products
-app.get("/", async (req, res) => {
+//get all products paginated + filter
+app.get("/:page/:filter", async (req, res) => {
     try {
-        const product = await productModel.find().skip(2).limit(4);
-        res.json(product)
+        const { page, filter } = req.params;
+        if (!page || !filter) {
+            return res.json({
+                status: 400,
+                message: 'mising params'
+            })
+        }
+        const limit = 4;
+        const toSkip = limit * page;
+        if (filter !== 'all') {
+            let active;
+            if (filter === 'active') {
+                active = true;
+            } else if (filter === 'notActive') {
+                active = false;
+            }
+            const product = await productModel.find({active: {$eq: active}}).skip(toSkip).limit(limit);
+            return res.json(product);
+        }
+        const product = await productModel.find().skip(toSkip).limit(limit);
+        res.json(product);
     } catch (error) {
         console.error(error.message)
     }
