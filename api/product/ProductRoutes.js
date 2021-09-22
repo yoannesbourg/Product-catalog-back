@@ -8,20 +8,19 @@ const productModel = require("../../models/productSchema")
 //Create a product
 app.post("/create", async (req, res) => {
     try {
-        const { name, description, price, photo, active } = req.body.newProduct
+        const { name, description, price, photo, active } = req.body.newProduct;
         const newProduct = new productModel({
             name, description, price, photo, active
         });
         const result = await newProduct.save();
-        return res.json(result)
+        return res.json(result);
     } catch (error) {
-        console.error(error.message)
+        console.error(error.message);
     }
 })
 
 //get all products paginated + filter
 app.get("/:page/:filter", async (req, res) => {
-    console.log('get')
     try {
         const { page, filter } = req.params;
         if (!page || !filter) {
@@ -29,9 +28,11 @@ app.get("/:page/:filter", async (req, res) => {
                 status: 400,
                 message: 'mising params'
             })
-        }
-        const limit = 4;
+        };
+
+        const limit = 6;
         const toSkip = limit * page;
+
         if (filter !== 'all') {
             let active;
             if (filter === 'active') {
@@ -39,11 +40,11 @@ app.get("/:page/:filter", async (req, res) => {
             } else if (filter === 'notActive') {
                 active = false;
             }
+
             const product = await productModel.find({active: {$eq: active}}).skip(toSkip).limit(limit);
             return res.json(product);
         }
         const product = await productModel.find().skip(toSkip).limit(limit);
-        console.log(product, toSkip, limit)
         res.json(product);
     } catch (error) {
         console.error(error.message)
@@ -59,30 +60,29 @@ app.get("/filter/:active", async (req, res) => {
                 message: 'mising params'
             })
         }
-        let active
+        let active;
 
         if (req.params === 'true') {
-            active = true
+            active = true;
         } else if (req.params === 'false') {
-            active = false
+            active = false;
         }
-        console.log(req.params)
-        const product = await productModel.find({active: {$eq: active}})
-        res.json(product)
+        const product = await productModel.find({active: {$eq: active}});
+        res.json(product);
     } catch (error) {
-        console.error(error.message)
+        console.error(error.message);
     }
 })
 
 //get a single product
 app.get("/:id", async (req, res) => {
     try {
-        const { id } = req.params
-        const product = await productModel.findOne({ _id: id })
+        const { id } = req.params;
+        const product = await productModel.findOne({ _id: id });
 
-        res.json(product)
+        res.json(product);
     } catch (error) {
-        console.error(error.message)
+        console.error(error.message);
     }
 })
 
@@ -95,21 +95,21 @@ app.put("/update/:id", async (req, res) => {
             $set: {
                 name, description, price, photo, active
             }
-        })
-        return res.json(updateProduct)
+        });
+        return res.json(updateProduct);
     } catch (error) {
-        console.error(error.message)
+        console.error(error.message);
     }
 })
 
 //delete a product
 app.delete("/delete/:id", async (req, res) => {
     try {
-        const { id } = req.params
-        const deleteProduct = await productModel.deleteOne({ _id: id })
-        res.json(deleteProduct)
+        const { id } = req.params;
+        const deleteProduct = await productModel.deleteOne({ _id: id });
+        res.json(deleteProduct);
     } catch (error) {
-        console.error(error.message)
+        console.error(error.message);
     }
 })
 
