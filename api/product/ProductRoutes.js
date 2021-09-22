@@ -21,6 +21,7 @@ app.post("/create", async (req, res) => {
 
 //get all products paginated + filter
 app.get("/:page/:filter", async (req, res) => {
+    console.log('get')
     try {
         const { page, filter } = req.params;
         if (!page || !filter) {
@@ -29,7 +30,7 @@ app.get("/:page/:filter", async (req, res) => {
                 message: 'mising params'
             })
         }
-        const limit = 12;
+        const limit = 4;
         const toSkip = limit * page;
         if (filter !== 'all') {
             let active;
@@ -42,6 +43,7 @@ app.get("/:page/:filter", async (req, res) => {
             return res.json(product);
         }
         const product = await productModel.find().skip(toSkip).limit(limit);
+        console.log(product, toSkip, limit)
         res.json(product);
     } catch (error) {
         console.error(error.message)
