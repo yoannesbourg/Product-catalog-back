@@ -29,7 +29,7 @@ app.get("/:page/:filter", async (req, res) => {
                 message: 'mising params'
             })
         }
-        const limit = 4;
+        const limit = 12;
         const toSkip = limit * page;
         if (filter !== 'all') {
             let active;
