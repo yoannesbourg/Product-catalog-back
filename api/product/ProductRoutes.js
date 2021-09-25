@@ -33,20 +33,20 @@ app.post("/create", async (req, res) => {
 })
 
 //get all products paginated + filter
-app.get("/:page/:filter", async (req, res) => {
+app.get("/:page/:filter/:limit", async (req, res) => {
     try {
-        const { page, filter } = req.params;
-
-        if (!page || !filter) {
+        const { page, filter, limit } = req.params;
+        if (!page || !filter || !limit) {
             return res.json({
                 status: 400,
                 message: 'mising params'
             });
         };
 
-        const limit = 6;
         const toSkip = limit * page;
 
+        const list = await productModel.find();
+        let listLength = list.length
         if (filter !== 'all') {
             let active;
             if (filter === 'active') {
@@ -55,16 +55,24 @@ app.get("/:page/:filter", async (req, res) => {
                 active = false;
             }
 
+            const filteredList = await productModel.find({active: {$eq: active}});
             const product = await productModel.find({active: {$eq: active}}).skip(toSkip).limit(limit);
-            return res.json(product);
+            listLength = filteredList.length;
+            return res.json({
+                product,
+                listLength
+            });
         }
         const product = await productModel.find().skip(toSkip).limit(limit);
-        res.json(product);
+        return res.json({
+            product,
+            listLength
+        });
     } catch (error) {
         console.error('error', error.message)
         return res.json({
             status: 500,
-            error: 'Error while creating a product'
+            error: 'Error while getting product list'
         })
     }
 })
@@ -87,7 +95,7 @@ app.get("/:id", async (req, res) => {
         console.error('error',error.message)
         return res.json({
             status: 500,
-            error: 'Error while creating a product'
+            error: 'Error while getting this product'
         })
     }
 })
@@ -123,7 +131,7 @@ app.put("/update/:id", async (req, res) => {
         console.error('error',error.message)
         return res.json({
             status: 500,
-            error: 'Error while creating a product'
+            error: 'Error while updating this product'
         })
     }
 })
@@ -138,7 +146,7 @@ app.delete("/delete/:id", async (req, res) => {
         console.error('error',error.message)
         return res.json({
             status: 500,
-            error: 'Error while creating a product'
+            error: 'Error while deleting this product'
         })
     }
 })
