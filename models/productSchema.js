@@ -8,6 +8,4 @@ const productSchema = mongoose.Schema({
     active: Boolean
 })
 
-const productModel = mongoose.model('product', productSchema)
-
-module.exports = productModel
+module.exports = mongoose.model('product', productSchema)
