@@ -9,8 +9,7 @@ const productModel = require("../../models/productSchema")
 app.post("/create", async (req, res) => {
     try {
         const { name, description, price, photo, active } = req.body.newProduct;
-        
-        if (!name || !description || !price || !photo || !active) {
+        if (!name || !description || !price || !photo) {
             return res.json({
                 status: 400,
                 message: 'Missing information in the body request'
@@ -44,7 +43,6 @@ app.get("/:page/:filter/:limit", async (req, res) => {
         };
 
         const toSkip = limit * page;
-
         const list = await productModel.find();
         let listLength = list.length
         if (filter !== 'all') {
@@ -56,14 +54,14 @@ app.get("/:page/:filter/:limit", async (req, res) => {
             }
 
             const filteredList = await productModel.find({active: {$eq: active}});
-            const product = await productModel.find({active: {$eq: active}}).skip(toSkip).limit(limit);
+            const product = await productModel.find({active: {$eq: active}}).skip(toSkip).limit(parseInt(limit));
             listLength = filteredList.length;
             return res.json({
                 product,
                 listLength
             });
         }
-        const product = await productModel.find().skip(toSkip).limit(limit);
+        const product = await productModel.find().skip(toSkip).limit(parseInt(limit));
         return res.json({
             product,
             listLength
