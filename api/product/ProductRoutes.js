@@ -124,7 +124,18 @@ app.put("/update/:id", async (req, res) => {
             }
         });
 
-        return res.json(updateProduct);
+        const { modifiedCount, matchedCount } = updateProduct;
+
+        if (modifiedCount !== 1 && matchedCount !== 1) {
+            return res.json({
+                status: 400,
+                message: "Error. Product coudn't be updated"
+            });
+        }
+
+        const product = await productModel.findOne({ _id: id });
+
+        return res.json(product);
     } catch (error) {
         console.error('error',error.message)
         return res.json({
