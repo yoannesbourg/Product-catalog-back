@@ -22,14 +22,10 @@ app.get('/:key', (req, res) => {
 app.post("/", upload.single('image'), async (req, res) => {
     try {
         const file = req.file;
-        console.log(file);
         const result = await uploadFile(file);
         await unlinkFile(file.path);
         console.log(result);
-        const description = req.body.description;
-        return res.json({
-            imagePath: `/images/${result.Key}`
-        });
+        return res.json(result);
     } catch (error) {
         console.error('error', error.message)
         return res.json({
